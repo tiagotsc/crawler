@@ -11,7 +11,8 @@ Passo a passo para execução iniciar o Laravel
 
 Passo a passo para execução iniciar o Angular
 - Descompacte o arquivo angular.zip
-- Dentro da pasta angular execute: npm install -g @angular/cli
+- Entre na pasta angular
+- Execute: npm install -g @angular/cli
 - Depois execute o comando: ng serve --open
 
 	
