@@ -77,7 +77,7 @@ class CrawlerCommand extends Command
                     }
                 }
             }catch(\Throwable $t){
-                echo "Erro na requisição da url ".$url."\n";
+                echo "Erro na requisição da url: ".$url."\n";
             }
         }
         return $this->crawlerSave($urls, $allLink, $allEmail);
