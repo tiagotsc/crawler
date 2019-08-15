@@ -55,25 +55,29 @@ class CrawlerCommand extends Command
         $allLink = []; # Armazena os links que passarem pela validação
         $allEmail =[]; # Armazena os emails que passarem pela validação
         foreach($urls as $url){
-            $crawler = $client->request('GET', $url);
-            $html = $crawler->html();
-            $links = [];
-            $emails = [];
-            preg_match_all('/<a href=["\']?((?:.(?!["\']?\s+(?:\S+)=|[>"\']))+.)["\']?>/i', $html, $links);
-            preg_match_all('/\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i', $html, $emails);
-            if(isset($links[1])){
-                foreach(array_unique($links[1]) as $l){ 
-                    if(!in_array($l, $allUrls) and strpos($l, 'http') !== false){
-                        $allLink[] = ['url' => $l];
+            try{
+                $crawler = $client->request('GET', $url);
+                $html = $crawler->html();
+                $links = [];
+                $emails = [];
+                preg_match_all('/<a href=["\']?((?:.(?!["\']?\s+(?:\S+)=|[>"\']))+.)["\']?>/i', $html, $links);
+                preg_match_all('/\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i', $html, $emails);
+                if(isset($links[1])){
+                    foreach(array_unique($links[1]) as $l){ 
+                        if(!in_array($l, $allUrls) and strpos($l, 'http') !== false){
+                            $allLink[] = ['url' => $l];
+                        }
                     }
                 }
-            }
-            if(isset($emails[0])){
-                foreach(array_unique($emails[0]) as $em){
-                    if(!in_array($em, $emailsDb)){
-                        $allEmail[] = ['email' => $em];
+                if(isset($emails[0])){
+                    foreach(array_unique($emails[0]) as $em){
+                        if(!in_array($em, $emailsDb)){
+                            $allEmail[] = ['email' => $em];
+                        }
                     }
                 }
+            }catch(\Throwable $t){
+                echo "Erro na requisição da url ".$url."\n";
             }
         }
         return $this->crawlerSave($urls, $allLink, $allEmail);
